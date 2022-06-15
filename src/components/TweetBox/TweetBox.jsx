@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useState } from "react"
 import TweetInput from "./TweetInput"
 import "./TweetBox.css"
 
@@ -10,37 +11,48 @@ export default function TweetBox(props) {
   console.log("tweets: ", props.tweets)
   console.log("tweets array length: ", props.tweets.length)
 
-  const handleOnTweetTextChange = () => {
-    
+  const handleOnTweetTextChange = (event) => {
+    props.setTweetText(event.target.value)
+
   }
+
+  const [tweetToggle, setTweetToggle] = useState(true)
 
   const handleOnSubmit = () => {
     let newTweet = {
       name: props.userProfile.name, 
       handle: props.userProfile.handle,
       id: props.tweets.length, 
-      text: "",
+      text: props.tweetText,
       comments: 0,
       retweets: 0,
       likes: 0
     }
 
-    console.log("click!")
     props.tweets.push(newTweet)
     props.setTweets(props.tweets)
+    props.setTweetText("")
     
     
   }
 
   return (
     <div className="tweet-box">
-      <TweetInput value = {props.tweetText}/>
+      <TweetInput 
+        value = {props.tweetText}
+        handleOnChange = {handleOnTweetTextChange}
+      />
 
       <div className="tweet-box-footer">
         <TweetBoxIcons />
-        <TweetCharacterCount />
+        <TweetCharacterCount 
+          text = {props.tweetText}
+          setTweetToggle = {setTweetToggle}
+        />
         <TweetSubmitButton 
           handleOnSubmit = {handleOnSubmit}
+          tweetToggle = {tweetToggle}
+          
         />
       </div>
     </div>
@@ -60,14 +72,25 @@ export function TweetBoxIcons() {
 
 export function TweetCharacterCount(props) {
   // ADD CODE HERE
-  return <span></span>
+    if(props.text.length > 0 && props.text.length < 141) {
+      props.setTweetToggle(false)
+      return <span className="tweet-length">{140 - props.text.length}</span>
+    } else if(props.text.length >= 141){
+      props.setTweetToggle(true)
+      return <span className="tweet-length red">{140 - props.text.length}</span>
+    } else {
+      props.setTweetToggle(true)
+      return <span className="tweet-length"></span>
+    }
+  
 }
 
-export function TweetSubmitButton({handleOnSubmit}) {
+export function TweetSubmitButton({handleOnSubmit, tweetToggle}) {
+  console.log(tweetToggle)
   return (
     <div className="tweet-submit">
       <i className="fas fa-plus-circle"></i>
-      <button className="tweet-submit-button" onClick={handleOnSubmit}>Tweet</button>
+      <button className="tweet-submit-button" onClick={handleOnSubmit} disabled={tweetToggle}>Tweet</button>
     </div>
   )
 }
