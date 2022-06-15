@@ -11,7 +11,9 @@ export default function App() {
   const [userProfile, setUserProfile] = useState(codepathUserProfile)
   const [tweets, setTweets] = useState([firstTweet])
 
-  console.log(tweets)
+  const [tweetText, setTweetText] = useState("")
+
+  //console.log(tweets)
   return (
     <div className="app">
       <Navbar navLinks = {navLinks}/>
@@ -20,7 +22,11 @@ export default function App() {
         <Feed 
               tweets = {tweets}
               setTweets = {setTweets}
+
               userProfile = {userProfile}
+
+              tweetText = {tweetText}
+              setTweetText = {setTweetText}
         />
         <Advertisements />
       </main>
